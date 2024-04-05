@@ -12,4 +12,13 @@
 5.	Ethiopia Markets 2020
 
 ▪	Raster Data
-1.	Ethiopia land cover
+1.	Ethiopia's land cover
+
+
+### Spatial queries
+
+SELECT settlement_id, market_id, MIN(ST_Distance(settlements(geometry), market(geometry)) AS distance
+FROM settlements_data
+CROSS JOIN markets_data
+GROUP BY settlement_id;
+
