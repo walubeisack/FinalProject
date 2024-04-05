@@ -22,3 +22,11 @@ FROM settlements_data
 CROSS JOIN markets_data
 GROUP BY settlement_id;
 
+SELECT 
+    land_cover_type,
+    ST_AsText(land_cover_type(geometry)) AS land_cover_geometry,
+    ST_Area(land_cover_type(geometry)) AS land_area
+FROM 
+    land_cover_data
+WHERE 
+    land_cover_type = 'Agricultural';
