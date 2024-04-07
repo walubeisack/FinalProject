@@ -1,7 +1,9 @@
 # Leveraging Geospatial Data and Network Analysis for Targeted Food Security Planning in the Tigray Region, Ethiopia
 ## Objectives
 1.	To analyze the accessibility of markets for the population of the Tigray region by calculating the distance between the markets and settlements.
-2.	To access the spatial distribution and extent of agricultural land in the region
+2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
+3.	To access the spatial distribution and extent of agricultural land in the region.
+
 
 ## Data Acquisition, Processing, & Database Setup
 ▪	Vector Data
