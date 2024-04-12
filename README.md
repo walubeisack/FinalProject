@@ -1,4 +1,6 @@
 # Leveraging Geospatial Data and Network Analysis for Targeted Food Security Planning in the Tigray Region, Ethiopia
+The Tigray region of Ethiopia faces significant challenges regarding food security, exacerbated by factors such as internal conflicts, climate variability, land degradation, and socio-economic disparities. According to Oxfam, about 3.5 million people in this region are facing acute hunger and need immediate food assistance (Oxfam, 2024).  Additionally, food shortages are a major problem facing this population, and the extent of this problem is likely to increase through 2024 (ibid.). In response to these challenges, this project aims to employ advanced geospatial techniques, such as network analysis to develop a strategy for addressing food insecurity in the region. By integrating diverse datasets, including population statistics, settlements, markets, and roads in Tigray, this project will be able to provide a detailed picture of the food accessibility landscape in this traditionally underserved region.
+
 ## Objectives
 1.	To analyze the accessibility of markets for the population of the Tigray region by calculating the distance between the markets and settlements.
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
@@ -7,14 +9,25 @@
 
 ## Data Acquisition, Processing, & Database Setup
 ▪	Vector Data
-1.	Level 3 Administrative boundaries (woreda) 2021
+1.	Level 3 Administrative boundaries (woreda) 2021 [https://data.humdata.org/dataset/cod-ps-eth]
 2.	Ethiopia Settlements 2018
 3.	Roads 2018
 4.	Ethiopia Subnational Population Statistics 2022
-5.	Ethiopia Markets 2020
+5.	Ethiopia Markets 2020 [(https://data.kimetrica.com/dataset/ethiopia-markets)]
 
 ▪	Raster Data
 1.	Ethiopia's land cover
+
+
+### Data Processing
+Transportation data, including bus and subway stops, as well as which route was associated with the stops, were downloaded from MassGIS (See figure 1). Reliability data for 2015 - March 2024 were downloaded from the MBTA open data portal.
+
+Demographics data, Ethiopia Subnational Population Statistics 2022 containing data regarding population statistics. Data was downloaded from Ethiopia Data grid via Humanitarian Data exchange. The original dataset contained the entire nation data (Ethiopia) it was therefore clipped down to the Tigray region using ArcGIS Pro. 
+Level 3 Administrative boundaries (woredas) dataset was also downloaded from the same source and clipped to remain with data attributed to the Tigray region on ArcGIS Pro.
+
+### Data layers
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/32ab70fd-3ed3-4b77-9ffb-7fd6ae7e33ba)
 
 
 ### Spatial queries
