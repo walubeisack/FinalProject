@@ -10,19 +10,19 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 ## Data Acquisition, Processing, & Database Setup
 ▪	Vector Data
 1.	Level 3 Administrative boundaries (woreda) 2021 [https://data.humdata.org/dataset/cod-ps-eth]
-2.	Ethiopia Settlements 2018
-3.	Roads 2018
-4.	Ethiopia Subnational Population Statistics 2022
+2.	Ethiopia Settlements 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
+3.	Roads 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
+4.	Ethiopia Subnational Population Statistics 2022 [https://data.humdata.org/dataset/cod-ps-eth]
 5.	Ethiopia Markets 2020 [(https://data.kimetrica.com/dataset/ethiopia-markets)]
 
 ▪	Raster Data
-1.	Ethiopia's land cover
+1.	Ethiopia's land cover [https://code.earthengine.google.com/?scriptPath=Examples%3ADatasets%2FGOOGLE%2FGOOGLE_DYNAMICWORLD_V1]
 
 
 ### Data Processing
-Transportation data, including bus and subway stops, as well as which route was associated with the stops, were downloaded from MassGIS (See figure 1). Reliability data for 2015 - March 2024 were downloaded from the MBTA open data portal.
+The Ethiopia markets dataset was downloaded from Kimetrica Data, and using ArcGIS pro, the markets in Tigray were selected and exported. 
 
-Demographics data, Ethiopia Subnational Population Statistics 2022 containing data regarding population statistics. Data was downloaded from Ethiopia Data grid via Humanitarian Data exchange. The original dataset contained the entire nation data (Ethiopia) it was therefore clipped down to the Tigray region using ArcGIS Pro. 
+Demographics data, Ethiopia Subnational Population Statistics 2022 contains data regarding population statistics. The dataset was downloaded from the Ethiopia Data grid via Humanitarian Data exchange. The original dataset contained the entire nation data (Ethiopia) it was therefore clipped down to the Tigray region using ArcGIS Pro. 
 Level 3 Administrative boundaries (woredas) dataset was also downloaded from the same source and clipped to remain with data attributed to the Tigray region on ArcGIS Pro.
 
 ### Data layers
