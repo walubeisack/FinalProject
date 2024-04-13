@@ -25,6 +25,8 @@ The Ethiopia markets dataset was downloaded from Kimetrica Data, and using ArcGI
 Demographics data, Ethiopia Subnational Population Statistics 2022 contains data regarding population statistics. The dataset was downloaded from the Ethiopia Data grid via Humanitarian Data Exchange. The original dataset contained the entire nation data (Ethiopia) it was therefore clipped down to the Tigray region using ArcGIS Pro. 
 Level 3 Administrative boundaries (woredas) dataset was also downloaded from the same source and clipped to remain with data attributed to the Tigray region on ArcGIS Pro.
 All the data layers were reprojected to WGQ 1984 UTM Zone 37N
+Land cover data was downloaded and exported from Google Earth Engine. 
+
 ### Data layers
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/32ab70fd-3ed3-4b77-9ffb-7fd6ae7e33ba)
