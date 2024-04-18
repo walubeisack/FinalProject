@@ -9,7 +9,7 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 
 ## Data Acquisition, Processing, & Database Setup
 ▪	Vector Data
-1.	Level 3 Administrative boundaries (woreda) 2021 [https://data.humdata.org/dataset/cod-ps-eth]
+1.	Level 3 Administrative boundaries (woreda) 2021 [(https://data.humdata.org/dataset/cod-ab-eth?)]
 2.	Ethiopia Settlements 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
 3.	Roads 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
 4.	Ethiopia Subnational Population Statistics 2022 [https://data.humdata.org/dataset/cod-ps-eth]
