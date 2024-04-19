@@ -68,7 +68,7 @@ Export.image.toDrive({
   region:Tigray
 });
 ```
-The exported tiff file was then downloaded and added to ArcGIS pro to define projection, and clip to remain with land cover in the Tigray region only.
+The exported tiff file was then downloaded from google drive and added to ArcGIS Pro to define projection, and clip to remain with land cover in the Tigray region only.
 
 A final project database 'FoodSecurity' was created using pgadmin. All the sql queries and analysis will be stored on this database. 
 
@@ -81,7 +81,7 @@ A final project database 'FoodSecurity' was created using pgadmin. All the sql q
 
 
 ## 3.0 Spatial Data and Normalization
-The final polygon and point shapefiles were imported into the database through the command prompt using the command lines below:
+The final polygon and point shapefiles from ArcGIS Pro were imported into the database through the command prompt using the command lines below:
 Woredas are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
 shp2pgsql -s 32637 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql 
