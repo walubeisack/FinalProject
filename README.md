@@ -1,13 +1,14 @@
 # Leveraging Geospatial Data for Targeted Food Security Planning in the Tigray Region, Ethiopia
+## 1. Introduction
 The Tigray region of Ethiopia faces significant challenges regarding food security, exacerbated by factors such as internal conflicts, climate variability, land degradation, and socio-economic disparities. According to Oxfam, about 3.5 million people in this region are facing acute hunger and need immediate food assistance (Oxfam, 2024).  Additionally, food shortages are a major problem facing this population, and the extent of this problem is likely to increase through 2024 (ibid.). In response to these challenges, this project aims to employ advanced geospatial techniques, such as network analysis to develop a strategy for addressing food insecurity in the region. By integrating diverse datasets, including population statistics, settlements, markets, and roads in Tigray, this project will be able to provide a detailed picture of the food accessibility landscape in this traditionally underserved region.
 
-## Objectives
+### Objectives
 1.	To analyze the accessibility of markets for the population of the Tigray region by calculating the distance between the markets and settlements.
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
 
 
-## Data Acquisition, Processing, & Database Setup
+## 2.0 Data Acquisition, Processing, & Database Setup
 ▪	Vector Data
 1.	Level 3 Administrative boundaries (woreda) 2021 [(https://data.humdata.org/dataset/cod-ab-eth?)]
 2.	Ethiopia Settlements 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
@@ -19,7 +20,7 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 1.	Ethiopia's land cover [(https://code.earthengine.google.com/3592b075f0441e86b67aa80946377869)]
 
 
-### Data Processing
+### 2.1 Data Processing
 The Ethiopia markets dataset was downloaded from Kimetrica Data as a csv file, and using ArcGIS Pro XY table to point tool, the markets were added onto the map, then clipped to remain with markets in the Tigray region using the clip tool. 
 
 Demographics data, Ethiopia Subnational Population Statistics 2022 contains data regarding population statistics. The dataset was downloaded from the Ethiopia Data grid via Humanitarian Data Exchange. The original dataset contained the entire nation data (Ethiopia) it was therefore clipped down to the Tigray region using ArcGIS Pro. 
@@ -72,14 +73,14 @@ The exported tiff file was then downloaded and added to ArcGIS pro to define pro
 A final project database 'FoodSecurity' was created using pgadmin. All the sql queries and analysis will be stored on this database. 
 
 
-### Data layers
+### 2.2 Data layers
  *Study Area*
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/32ab70fd-3ed3-4b77-9ffb-7fd6ae7e33ba)
 
 
 
-### Spatial Data and Normalization
+## 3.0 Spatial Data and Normalization
 The final polygon and point shapefiles were imported into the database through the command prompt using the command lines below:
 Woredas are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
@@ -107,7 +108,9 @@ psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/6b73a80a-f8e7-4d8b-b6bb-807ff08e2846)
 
-All the tables were in 1NF already but had redundant columns that will not be used in the analysis. New tables  with data to used for analysis were therefore created as follows;
+### 3.1 Normalization
+
+All the tables were in 1NF already but had redundant columns that would not be used in the analysis. New tables  with data to be used for analysis were therefore created as follows;
 
 **Woredas table**
 
