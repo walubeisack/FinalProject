@@ -104,9 +104,10 @@ psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 
 
 *Tables*
+
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/6b73a80a-f8e7-4d8b-b6bb-807ff08e2846)
 
-All the tables were in 1NF already but had redundant columns that will not be used in the analysis. New tables with data to used for analysis were created;
+All the tables were in 1NF already but had redundant columns that will not be used in the analysis. New tables  with data to used for analysis were therefore created as follows;
 
 **Woredas table**
 
