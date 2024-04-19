@@ -1,8 +1,8 @@
 # Leveraging Geospatial Data for Targeted Food Security Planning in the Tigray Region, Ethiopia
-## 1. Introduction
+## 1.0 Introduction
 The Tigray region of Ethiopia faces significant challenges regarding food security, exacerbated by factors such as internal conflicts, climate variability, land degradation, and socio-economic disparities. According to Oxfam, about 3.5 million people in this region are facing acute hunger and need immediate food assistance (Oxfam, 2024).  Additionally, food shortages are a major problem facing this population, and the extent of this problem is likely to increase through 2024 (ibid.). In response to these challenges, this project aims to employ advanced geospatial techniques, such as network analysis to develop a strategy for addressing food insecurity in the region. By integrating diverse datasets, including population statistics, settlements, markets, and roads in Tigray, this project will be able to provide a detailed picture of the food accessibility landscape in this traditionally underserved region.
 
-### Objectives
+### 1.1 Objectives
 1.	To analyze the accessibility of markets for the population of the Tigray region by calculating the distance between the markets and settlements.
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
