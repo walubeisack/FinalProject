@@ -27,6 +27,7 @@ Demographics data, Ethiopia Subnational Population Statistics 2022 contains data
 Level 3 Administrative boundaries (woredas) dataset was also downloaded from the same source and clipped to remain with data attributed to the Tigray region on ArcGIS Pro.
 All the data layers were reprojected to WGQ 1984 UTM Zone 37N on ArcGIS Pro. 
 Land cover data was downloaded and processed from ESA World Land Cover (10m) to Google Drive using Google Earth Engine using the code below.   
+a rectangular polygon around the Tigray region was created. As exhibited in the code, the land cover data was clipped to remain with data attributed to the Tigray region extent.
 
 ```
 var dataset = ee.ImageCollection('ESA/WorldCover/v200').first();
@@ -68,7 +69,10 @@ Export.image.toDrive({
   region:Tigray
 });
 ```
-The exported tiff file was then downloaded from google drive and added to ArcGIS Pro to define projection, and clip to remain with land cover in the Tigray region only.
+The exported tiff file was then downloaded from Google Drive and added to ArcGIS Pro to define projection, and clip to remain with land cover in the Tigray region only.
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/bc52d797-c058-40bb-a208-84a75ac11fac)
+
 
 A final project database 'FoodSecurity' was created using pgadmin. All the sql queries and analysis will be stored on this database. 
 
@@ -82,22 +86,23 @@ A final project database 'FoodSecurity' was created using pgadmin. All the sql q
 
 ## 3.0 Spatial Data and Normalization
 The final polygon and point shapefiles from ArcGIS Pro were imported into the database through the command prompt using the command lines below:
-Woredas are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
+
+**Woredas** are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
 shp2pgsql -s 32637 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
 
-Markets
+**Markets**
 
 shp2pgsql -s 32637 -I Database\Data\Markets.shp public.Markets > Database\Data\sql_tables\Markets.sql
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Markets.sql
 
-Settlements
+**Settlements**
 
 shp2pgsql -s 32637 -I Database\Data\Markets.shp public.woredas > Database\Data\sql_tables\Settlements.sql
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Settlements.sql
 
-Tigray land cover
+**Tigray land cover**
 
 raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
@@ -110,7 +115,7 @@ psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 
 ### 3.1 Normalization
 
-All the tables were in 1NF already but had redundant columns that would not be used in the analysis. New tables  with data to be used for analysis were therefore created as follows;
+All the tables were already in 1NF but had redundant columns that would not be used in the analysis. New tables  with data to be used for analysis were therefore created as follows;
 
 **Woredas table**
 
@@ -128,7 +133,6 @@ INSERT INTO Woredas_clean(gid, shape_leng, shape_area, adm3_en, adm2_en, geom)
 SELECT gid, shape_leng, shape_area, adm3_en, adm2_en, geom
 FROM woredas;
 ```
-This SQL query deleted the columns; country and region from the Woredas table to remain with relevant data. 
 
 
 **Settlements table**
@@ -167,6 +171,8 @@ INSERT INTO markets_clean(gid, market, zone, latitude, longitude, geom)
 SELECT gid, market, zone, latitude,longitude,  geom
 FROM markets;
 ```
+
+All these queries create new tables populated with data from the original tables.
 
 *Original and updated tables*
 
