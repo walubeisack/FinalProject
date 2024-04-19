@@ -78,26 +78,6 @@ A final project database 'FoodSecurity' was created using pgadmin. All the sql q
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/32ab70fd-3ed3-4b77-9ffb-7fd6ae7e33ba)
 
 
-### Spatial queries
-
-SELECT settlement_id, market_id, MIN(ST_Distance(settlements(geometry), market(geometry)) AS distance
-FROM settlements_data
-CROSS JOIN markets_data
-GROUP BY settlement_id;
-
-SELECT 
-    land_cover_type,
-    ST_AsText(land_cover_type(geometry)) AS land_cover_geometry,
-    ST_Area(land_cover_type(geometry)) AS land_area
-FROM 
-    land_cover_data
-WHERE 
-    land_cover_type = 'Agricultural';
-
-ALTER TABLE Settlements
-DROP COLUMN optic_hier;
-
-
 
 ### Spatial Data and Normalization
 The final polygon and point shapefiles were imported into the database through the command prompt using the command lines below:
@@ -120,6 +100,7 @@ Tigray land cover
 
 raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
+
 
 
 *Tables*
@@ -147,13 +128,24 @@ This SQL query deleted the columns; country and region from the Woredas table to
 
 
 **Settlements table**
+
+a new table 'settlements_clean' was created and populated using the csript below. 
+
 ```
-ALTER TABLE Settlements
-DROP COLUMN main_town,
-DROP COLUMN mapsheet,
-DROP COLUMN nearest,
-DROP COLUMN distance,
-DROP COLUMN source;
+CREATE TABLE settlements_clean(
+	objectid int PRIMARY KEY,
+	poptot numeric,
+	hierarchy VARCHAR(255),
+	utm_z numeric,
+	easting numeric,
+	northing numeric,
+	geom GEOMETRY
+);
+-- populate the new table with columns
+INSERT INTO settlements_clean(objectid, hierarchy, poptot, utm_z, easting, northing, geom)
+SELECT objectid, hierarchy, poptot, utm_z, easting, northing, geom
+FROM settlements;
+
 ```
 
 
