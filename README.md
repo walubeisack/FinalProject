@@ -125,14 +125,23 @@ psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 *Tables*
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/6b73a80a-f8e7-4d8b-b6bb-807ff08e2846)
 
-All the tables were in 1NF already but had redundant columns that will not be used in the analysis. The columns were deleted from the tables as follows;
+All the tables were in 1NF already but had redundant columns that will not be used in the analysis. New tables with data to used for analysis were created;
 
 **Woredas table**
 
 ```
-ALTER TABLE Settlements
-DROP COLUMN country,
-DROP COLUMN region,
+CREATE TABLE Woredas_clean(
+	gid int PRIMARY KEY,
+	adm3_en VARCHAR(255),
+	adm2_en VARCHAR(255),
+	shape_area numeric,
+	shape_leng numeric,
+	geom GEOMETRY
+);
+-- populate the new table with columns
+INSERT INTO Woredas_clean(gid, shape_leng, shape_area, adm3_en, adm2_en, geom)
+SELECT gid, shape_leng, shape_area, adm3_en, adm2_en, geom
+FROM woredas;
 ```
 This SQL query deleted the columns; country and region from the Woredas table to remain with relevant data. 
 
