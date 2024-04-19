@@ -129,7 +129,7 @@ This SQL query deleted the columns; country and region from the Woredas table to
 
 **Settlements table**
 
-a new table 'settlements_clean' was created and populated using the csript below. 
+A new table 'settlements_clean' was created and populated using the script below. 
 
 ```
 CREATE TABLE settlements_clean(
@@ -147,9 +147,26 @@ SELECT objectid, hierarchy, poptot, utm_z, easting, northing, geom
 FROM settlements;
 
 ```
+**Markets table**
 
+```
+CREATE TABLE markets_clean(
+	gid int PRIMARY KEY,
+	market VARCHAR(255),
+	zone VARCHAR(255),
+	latitude numeric,
+	longitude numeric,
+	geom GEOMETRY
+);
+-- populate the new table with columns
+INSERT INTO markets_clean(gid, market, zone, latitude, longitude, geom)
+SELECT gid, market, zone, latitude,longitude,  geom
+FROM markets;
+```
 
+*Original and updated tables*
 
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/802616d4-600a-4cf4-86a7-d512cad7f39b)
 
 
 
