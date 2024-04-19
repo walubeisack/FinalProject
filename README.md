@@ -47,3 +47,6 @@ FROM
     land_cover_data
 WHERE 
     land_cover_type = 'Agricultural';
+
+ALTER TABLE Settlements
+DROP COLUMN optic_hier;
