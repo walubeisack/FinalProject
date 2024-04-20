@@ -190,3 +190,4 @@ All these queries create new tables populated with data from the original tables
 
 
 
+
