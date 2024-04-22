@@ -179,6 +179,26 @@ All these queries create new tables populated with data from the original tables
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/802616d4-600a-4cf4-86a7-d512cad7f39b)
 
 
+Markets_clean
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/9bd05640-e202-4b7b-ae6d-2115123dacb9)
+
+
+Settlements_clean
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/f87857fa-06d8-4ad0-bb08-5c1eff30a64e)
+
+
+Woredas_clean
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/7a2d03f3-1a49-4175-80ac-26a60aae8fdc)
+
+
+
+
+
+
+
 
 
 
