@@ -1,4 +1,4 @@
-# Leveraging Geospatial Data for Targeted Food Security Planning in the Tigray Region, Ethiopia
+# Leveraging Geospatial Data to Analyze the Impact of Conflicts on Food Security in the Tigray Region, Ethiopia
 ## 1.0 Introduction
 The Tigray region of Ethiopia faces significant challenges regarding food security, exacerbated by factors such as internal conflicts, climate variability, land degradation, and socio-economic disparities. According to Oxfam, about 3.5 million people in this region are facing acute hunger and need immediate food assistance (Oxfam, 2024).  Additionally, food shortages are a major problem facing this population, and the extent of this problem is likely to increase through 2024 (ibid.). In response to these challenges, this project aims to employ advanced geospatial techniques, such as network analysis to develop a strategy for addressing food insecurity in the region. By integrating diverse datasets, including population statistics, settlements, markets, and roads in Tigray, this project will be able to provide a detailed picture of the food accessibility landscape in this traditionally underserved region.
 
@@ -11,10 +11,9 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 ## 2.0 Data Acquisition, Processing, & Database Setup
 ▪	Vector Data
 1.	Level 3 Administrative boundaries (woreda) 2021 [(https://data.humdata.org/dataset/cod-ab-eth?)]
-2.	Ethiopia Settlements 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
-3.	Roads 2018 [https://www.ethiogis-mapserver.org/dataDownload.php]
-4.	Ethiopia Subnational Population Statistics 2022 [https://data.humdata.org/dataset/cod-ps-eth]
-5.	Ethiopia Markets 2020 [(https://data.kimetrica.com/dataset/ethiopia-markets)]
+2.	Ethiopia Settlements 2020 [https://www.ethiogis-mapserver.org/dataDownload.php]
+3.	Ethiopia Subnational Population Statistics 2022 [https://data.humdata.org/dataset/cod-ps-eth]
+4.	Ethiopia Markets 2020 [(https://data.kimetrica.com/dataset/ethiopia-markets)]
 
 ▪	Raster Data
 1.	Ethiopia's land cover [(https://code.earthengine.google.com/3592b075f0441e86b67aa80946377869)]
