@@ -8,7 +8,8 @@ Internal conflicts in Ethiopia are attributed to the former ruling party, Tigray
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
 
-![Study_area](https://github.com/walubeisack/FinalProject/assets/165956747/06cf352c-5a41-4285-adea-953322dc5ddb)
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/ec2b371d-c152-4af0-99d1-7b2f87097316)
+
 
 
 ## 2.0 Data Acquisition, Processing, & Database Setup
