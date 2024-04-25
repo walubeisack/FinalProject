@@ -8,6 +8,7 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
 
+![Study_area](https://github.com/walubeisack/FinalProject/assets/165956747/06cf352c-5a41-4285-adea-953322dc5ddb)
 
 
 ## 2.0 Data Acquisition, Processing, & Database Setup
