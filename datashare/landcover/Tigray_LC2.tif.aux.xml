@@ -1,0 +1,27 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>Map</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>-0.5</HistMin>
+        <HistMax>90.5</HistMax>
+        <BucketCount>91</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>0|0|0|0|0|0|0|0|0|0|22754206|0|0|0|0|0|0|0|0|0|146629989|0|0|0|0|0|0|0|0|0|215328633|0|0|0|0|0|0|0|0|0|135978249|0|0|0|0|0|0|0|0|0|1716662|0|0|0|0|0|0|0|0|0|9719577|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|683052|0|0|0|0|0|0|0|0|0|36173</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="STATISTICS_COUNT">532846541.000000</MDI>
+      <MDI key="STATISTICS_COVARIANCES">91.13328530895883</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES"></MDI>
+      <MDI key="STATISTICS_MAXIMUM">90</MDI>
+      <MDI key="STATISTICS_MEAN">29.625862279882</MDI>
+      <MDI key="STATISTICS_MEDIAN">30.000000</MDI>
+      <MDI key="STATISTICS_MINIMUM">10</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">9.5463755063877</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
