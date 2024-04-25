@@ -1,7 +1,7 @@
 # Leveraging Geospatial Data to Analyze the Impact of Conflicts on Food Security in the Tigray Region, Ethiopia
 ## 1.0 Introduction
 The Tigray region of Ethiopia faces significant challenges regarding food security, exacerbated by factors such as internal conflicts, climate variability, land degradation, and socio-economic disparities. According to Oxfam, about 3.5 million people in this region are facing acute hunger and need immediate food assistance (Oxfam, 2024).  Additionally, food shortages are a major problem facing this population, and the extent of this problem is likely to increase through 2024 (ibid.). In response to these challenges, this project aims to employ advanced geospatial techniques, such as network analysis to develop a strategy for addressing food insecurity in the region. By integrating diverse datasets, including population statistics, settlements, markets, and roads in Tigray, this project will be able to provide a detailed picture of the food accessibility landscape in this traditionally underserved region.
-
+Internal conflicts in Ethiopia are attributed to the former ruling party, Tigray People's Liberation Party(TPLF) fighting against the Ethiopian government over political and ethnic matters causing a severe humanitarian crisis in the region. 
 
 ### 1.1 Objectives
 1.	To analyze the accessibility of markets for the population of the Tigray region by calculating the distance between the markets and settlements.
@@ -78,7 +78,7 @@ The exported tiff file was then downloaded from Google Drive and added to ArcGIS
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/bc52d797-c058-40bb-a208-84a75ac11fac)
 
 
-A final project database 'FoodSecurity' was created using pgadmin. All the sql queries and analysis will be stored on this database. 
+A final project database 'FoodSecurity' was created using pgadmin. All the tables used for analysis will be stored on this database. 
 
 
 ### 2.2 Data layers
@@ -94,27 +94,35 @@ The final polygon and point shapefiles from ArcGIS Pro were imported into the da
 
 **Woredas** are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
-shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql 
+```SQL
+shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
+```
 
 **Markets**
 
+```SQL
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.Markets > Database\Data\sql_tables\Markets.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Markets.sql
 
+```
 **Settlements**
 
+```SQL
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.woredas > Database\Data\sql_tables\Settlements.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Settlements.sql
 
+```
 **Tigray land cover**
 
+```SQL
 raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
+```
 
 
 
