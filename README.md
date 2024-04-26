@@ -7,8 +7,13 @@ Internal conflicts in Ethiopia are attributed to the former ruling party, Tigray
 1.	To analyze the accessibility of markets for the population of the Tigray region by calculating the distance between the markets and settlements.
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
+   
 
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/ec2b371d-c152-4af0-99d1-7b2f87097316)
+
+   	*Study Area*
+  	
+![Study_area](https://github.com/walubeisack/FinalProject/assets/165956747/a6813eef-588a-487d-beb3-d05ade710c6f)
+
 
 
 
@@ -129,6 +134,7 @@ psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 
 *Tables*
 
+
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/6b73a80a-f8e7-4d8b-b6bb-807ff08e2846)
 
 ### 3.1 Normalization
@@ -150,6 +156,8 @@ SELECT
 FROM woredas_21;
 
 ```
+
+
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/e291b90d-b863-4dda-84bf-50eb418cf441)
 
@@ -257,6 +265,9 @@ GROUP BY market_buffers.gid
 
 ```
 
+![Settlements_in_buffers](https://github.com/walubeisack/FinalProject/assets/165956747/0db9ffd5-2b0f-42b6-86ad-8b7186bb50bb)
+
+
 We had earlier talked about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
 
 
@@ -345,7 +356,7 @@ GROUP BY restricted_areas.woreda;
 ![average_landcover_values_in_redzone](https://github.com/walubeisack/FinalProject/assets/165956747/c976ddae-465b-4c5c-ae20-1bdd479590be)
 
 
-I am yet to find out how much cropland is in the the restricted area compared to cropland in restricted areas.
+I am yet to find out how much cropland is in the restricted area compared to cropland in restricted areas.
 I made a land cover types and pixels count table using;
 
 ```SQL
@@ -360,12 +371,12 @@ FROM
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/dd2172ec-cc55-42dd-95bf-b02096f7103b)
 
 
-compared the land_cover classes with the defined classes from the data source
+Compared the land_cover classes with the defined classes from the data source
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/bd4cbd62-c7ce-4d2d-9a38-db406089cbc3)
 
 
-cropland is represented by value '40', and a table containing cropland values was created
+Cropland is represented by value '40', and a table containing cropland values was created
 
 ```SQL
 CREATE TABLE cropland AS
