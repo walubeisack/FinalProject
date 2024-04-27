@@ -8,7 +8,10 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
 
-![Study_area](https://github.com/walubeisack/FinalProject/assets/165956747/06cf352c-5a41-4285-adea-953322dc5ddb)
+*Study Area*
+
+![Study_area](https://github.com/walubeisack/FinalProject/assets/165956747/d2f777b4-1792-4658-94f4-fa1fdbdcd8b1)
+
 
 
 ## 2.0 Data Acquisition, Processing, & Database Setup
@@ -32,7 +35,7 @@ All the data layers were reprojected to WGQ 1984 UTM Zone 37N on ArcGIS Pro.
 Land cover data was downloaded and processed from ESA World Land Cover (10m) to Google Drive using Google Earth Engine using the code below.   
 a rectangular polygon around the Tigray region was created. As exhibited in the code, the land cover data was clipped to remain with data attributed to the Tigray region extent.
 
-```JAVA
+```JAVASCRIPT
 var dataset = ee.ImageCollection('ESA/WorldCover/v200').first();
 var clippedDataset = dataset.clip(Tigray);
 
@@ -95,9 +98,9 @@ The final polygon and point shapefiles from ArcGIS Pro were imported into the da
 **Woredas** are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
 ```SQL
-shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql 
+shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas_21.sql 
 
-psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
+psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas_21.sql
 ```
 
 **Markets**
@@ -117,9 +120,9 @@ psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Settlements.sql
 ```
 **Tigray land cover**
 ```SQL
-raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
+raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\Tigray_lc2.sql
 
-psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
+psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Tigray_lc2.sql
 
 ```
 
