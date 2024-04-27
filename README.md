@@ -94,29 +94,34 @@ The final polygon and point shapefiles from ArcGIS Pro were imported into the da
 
 **Woredas** are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
+```SQL
 shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql 
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
+```
 
 **Markets**
+```SQL
 
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.Markets > Database\Data\sql_tables\Markets.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Markets.sql
 
+```
 **Settlements**
-
+```SQL
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.woredas > Database\Data\sql_tables\Settlements.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Settlements.sql
 
+```
 **Tigray land cover**
-
+```SQL
 raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 
-
+```
 
 *Tables*
 
