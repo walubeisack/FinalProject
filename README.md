@@ -281,7 +281,8 @@ ORDER BY buffer_area_percentage ASC;
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/0ba86bb3-4ec3-4e2d-9053-9cb8fa1fec24)
 
 
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/5f00ba06-8575-4d12-99b9-79d8cd727e07)
+![Population Access](https://github.com/walubeisack/FinalProject/assets/165956747/8aa9c153-faf4-4732-9200-a35569370306)
+
 
 
 
