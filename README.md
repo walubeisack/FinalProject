@@ -85,7 +85,7 @@ A final project database 'FoodSecurity' was created using pgadmin. All the sql q
 
 
 ### 2.2 Data layers
- *Study Area*
+*Data layers*
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/32ab70fd-3ed3-4b77-9ffb-7fd6ae7e33ba)
 
@@ -290,10 +290,11 @@ ORDER BY buffer_area_percentage ASC;
 
 
 
-We had earlier talked about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
+We had earlier discussed about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
 
 
-![Hard_to_reach_areas (2)](https://github.com/walubeisack/FinalProject/assets/165956747/272b3b82-f69b-4167-9102-45d1a3f1f3a0)
+![Hard_to_reach_areas](https://github.com/walubeisack/FinalProject/assets/165956747/e7aa1efb-544c-4552-bd51-59ea771c7036)
+
 
 
 ### Markets
