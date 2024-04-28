@@ -293,7 +293,8 @@ ORDER BY buffer_area_percentage ASC;
 We had earlier talked about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
 
 
-![Hard_to_Reach_areas](https://github.com/walubeisack/FinalProject/assets/165956747/adfe9333-b9ec-4af0-aecd-c8baefdffdba)
+![Hard_to_reach_areas (2)](https://github.com/walubeisack/FinalProject/assets/165956747/272b3b82-f69b-4167-9102-45d1a3f1f3a0)
+
 
 ### Markets
 ```SQL
