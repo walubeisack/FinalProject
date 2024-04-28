@@ -256,6 +256,39 @@ GROUP BY market_buffers.gid
 
 ```
 
+### Percent access
+This percentage is calculated from the ratio of the area the buffers cover in the woredas to the area of the woredas.
+
+```SQL
+CREATE TABLE percent_access AS
+SELECT 
+    buffer_coverage.woreda,
+    buffer_coverage.buffer_area,
+    woredas.woreda_area,
+    ROUND((buffer_coverage.buffer_area / woredas.woreda_area)::numeric * 100, 2) AS buffer_area_percentage
+FROM buffer_coverage
+JOIN (
+    SELECT 
+        woreda,
+        ST_Transform(geometry, 32637) AS geometry,
+        ST_Area(ST_Transform(geometry, 32637)) AS woreda_area
+    FROM woredas
+) woredas
+ON buffer_coverage.woreda = woredas.woreda
+ORDER BY buffer_area_percentage ASC;
+```
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/0ba86bb3-4ec3-4e2d-9053-9cb8fa1fec24)
+
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/5f00ba06-8575-4d12-99b9-79d8cd727e07)
+
+
+
+
+
+
+
 We had earlier talked about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
 
 
