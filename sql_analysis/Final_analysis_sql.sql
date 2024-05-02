@@ -9,7 +9,7 @@ CREATE EXTENSION POSTGIS;
 CREATE EXTENSION POSTGIS_RASTER;
 
 -- Upload the shapefiles
-woredas
+Woredas
 shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
 
@@ -134,126 +134,80 @@ WHERE ST_Intersects(rast.rast, restricted_areas.geometry)
 GROUP BY restricted_areas.woreda;		
 
 
-CREATE TABLE pixels AS
-SELECT (ST_ValueCount(rast)).value AS number_of_pixels,
-	(ST_ValueCount(rast)).count
-FROM tigray_lc2;
-
-CREATE TABLE pixels AS
+-- Create a table containing landcover type and their pixel counts
+CREATE TABLE lc_pixels AS
 SELECT
     (ST_ValueCount(rast)).value AS land_cover_type,
     (ST_ValueCount(rast)).count AS number_of_pixels
 FROM
     tigray_lc2;
-WHERE
-    (ST_ValueCount(rast)).value = 40;
 
-
-
-
-
-
-
-
-
-
-CREATE TABLE cropland AS
-SELECT *
-FROM pixels
-WHERE land_cover_type = 40;
-
-SELECT woredas_clean, AVG((ST_SummaryStats(ST_Clip(rast.rast, woredas_clean.geom, TRUE))).mean) AS avg_lc2		--#This will average the rast value from the polygons
-FROM public.tigray_lc2 AS rast, 
-public.access_clean AS woredas_clean		--#Renaming the raster and vector tables to rast and parks 
-WHERE ST_Intersects(rast.rast, woredas_clean.geom)		--#Where the raster values intersect the geometries of the vector file
-GROUP BY woredas_clean;
-
-
-
-
-
---totals
-SELECT COUNT(*) AS total_woredas
-FROM woredas_21;
-
-SELECT COUNT(*) AS total_settlements
-FROM settlements_clean;
-
-SELECT COUNT(*) AS total_markets
-FROM markets_clean;
-
-
-
---number of settlements in each woreda
-  SELECT woredas_21.w_name, 
-    COUNT(settlements_clean.objectid) AS number_of_settlements
-    FROM woredas_21
-    LEFT JOIN settlements_clean ON ST_Within(settlements_clean.geom, woredas_21.geom)
-    GROUP BY woredas_21.w_name
-	ORDER BY number_of_settlements DESC;
-
+--create a new table to summarize land cover types
+CREATE TABLE landcover_summary(
+landcover_type TEXT,
+pixel_count INTEGER
+);
+INSERT INTO landcover_summary (landcover_type, pixel_count)
 SELECT 
-    SUM(number_of_settlements) AS total_settlements
-FROM (
-    SELECT woredas_21.objectid, 
-    COUNT(settlements_clean.objectid) AS number_of_settlements
-    FROM woredas_21
-    LEFT JOIN settlements_clean ON ST_Within(settlements_clean.geom, woredas_21.geom)
-    GROUP BY woredas_21.objectid
-	ORDER BY number_of_settlements DESC;
-) AS subquery;
-
-SELECT ST_Intersection(rast, geometry)
-FROM tigray_lc2, restricted_areas;
-
-
-SELECT woredas_21.objectid,
-COUNT(DISTINCT settlements_clean.objectid) AS settlement_count
-FROM woredas_21
-LEFT JOIN settlements_clean ON woredas_21.objectid = settlements_clean.objectid
-GROUP BY woredas_21.objectid
-ORDER BY settlement_count ASC;
-
---number of markets in each woreda
-SELECT woreda.gid,
-COUNT(DISTINCT markets_clean.gid) AS market_count
-FROM woredas_clean
-LEFT JOIN markets_clean ON woredas_clean.gid = markets_clean.gid
-GROUP BY woredas_clean.gid
-ORDER BY market_count ASC;
-
-
-SELECT woredas_clean.gid AS polygon_id,
-COUNT(markets_clean.gid) AS number_of_markets
-FROM woredas_clean
-LEFT JOIN markets_clean ON ST_Within(markets_clean.geom, woredas_clean.geom)
-GROUP BY woredas_clean.gid
-ORDER BY number_of_markets DESC;
-
-
-
--- average distance between markets and settlements
-SELECT
-    AVG(ST_Distance(tigray_markets.geometry, tigray_settlements.geometry)) AS average_distance
+	CASE
+		WHEN land_cover_type = 10 THEN 'Tree cover'
+		WHEN land_cover_type = 20 THEN 'Shrubland'
+		WHEN land_cover_type = 30 THEN 'Grassland'
+		WHEN land_cover_type = 40 THEN 'Cropland'
+		WHEN land_cover_type = 50 THEN 'Built-up'
+		WHEN land_cover_type = 60 THEN 'Bare'
+		WHEN land_cover_type = 70 THEN 'Snow and ice'
+		WHEN land_cover_type = 80 THEN 'Permanent water bodies'
+		WHEN land_cover_type = 90 THEN 'Herbaceous wetland'
+		WHEN land_cover_type = 95 THEN 'Mangroves'
+		WHEN land_cover_type = 100 THEN 'Moss and lichen'
+		ELSE 'Other'
+	END AS landcover_type,
+	number_of_pixels AS pixel_count 
 FROM
-    tigray_markets,
-    tigray_settlements
-ORDER BY average_distance;
+	(SELECT
+	 	land_cover_type,
+	 	number_of_pixels
+	 FROM
+	 	lc_pixels
+	 ) AS v;
 
-SELECT settlements.gid, COUNT(*) AS num_settlements
-FROM woredas;
 
-	latitude,
-	longitude,
-	geom GEOMETRY
-FROM markets;
+--
+CREATE TABLE landcover_summary AS
+SELECT 
+    landcover_type,
+    SUM(pixel_count) AS total_pixel_count
+FROM 
+    land_cover_summary
+GROUP BY 
+    landcover_type
+ORDER BY total_pixel_count DESC;
 
-CREATE TABLE restricted_areas AS 
-SELECT 	
-	gid,
-	adm3_en AS woreda,
-	adm2_en AS zone,
-	shape_area,
-	shape_leng,
-	geom GEOMETRY
-FROM hard_reach_areas;
+-- Calculate the landcover area
+-- Get total pixels, use to calculate area per pixel, total area for different landcover type
+CREATE TABLE landcover_area AS
+WITH pixel_SUMMARY as (
+	SELECT SUM(total_pixel_count) as total_pixels
+	FROM landcover_summary
+)
+SELECT 
+    SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS area_per_pixel_sq_km,
+    	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 10)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_treecover_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 20)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_shrubland_sq_km,    
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 30)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_grassland_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 40)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_cropland_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 50)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_builtup_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 60)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_bare_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 70)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_snow_ice_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 80)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_permanentwaterb_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 90)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_herbaceous_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 95)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_mangroves_sq_km,	
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 100)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_moss_lichen_sq_km
+	FROM tigray_lc2, pixel_summary
+GROUP BY total_pixels;
+
+
+--
+
+
