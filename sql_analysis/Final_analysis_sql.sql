@@ -1,43 +1,28 @@
 -- Create the initial database
 CREATE DATABASE FoodSecurity;
 
-
 -- Connect to the database
 \c FoodSecurity;
-
 
 -- Create spatial extensions
 CREATE EXTENSION POSTGIS;
 CREATE EXTENSION POSTGIS_RASTER;
 
 -- Upload the shapefiles
-
+woredas
 shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql
-
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
 
-
-**Markets**
-
-
+Markets
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.Markets > Database\Data\sql_tables\Markets.sql
-
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Markets.sql
 
-
-**Settlements**
-
-
+Settlements
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.woredas > Database\Data\sql_tables\Settlements.sql
-
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Settlements.sql
 
-
-**Tigray land cover**
-
-
+Tigray land cover
 raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
-
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
 
 
@@ -65,15 +50,23 @@ FROM settlements;
 
 CREATE TABLE tigray_markets AS
 SELECT
-	gid ,
+	gid,
 	market,
 	zone,
 
+CREATE TABLE restricted_areas AS 
+SELECT 	
+	gid,
+	adm3_en AS woreda,
+	adm2_en AS zone,
+	shape_area,
+	shape_leng,
+	geom GEOMETRY
+FROM hard_reach_areas;
 
-
+--ANALYSIS
 
 -- 12km buffers around the markets
-
 CREATE TABLE market_buffers AS
 SELECT 
     tigray_markets.gid,
@@ -83,11 +76,10 @@ FROM tigray_markets;
 -- Create an index on the buffered geometries for faster spatial operations
 CREATE INDEX market_buffers_geom_idx ON market_buffers USING GIST (buffer_geom);
 
---dissolve the buffers
+--Dissolve the buffers
 CREATE TABLE dissolved_buffers AS
 SELECT ST_Union(buffer_geom) AS dissolved_buffer
 FROM market_buffers;
-
 
 -- Count settlements within each buffer
 SELECT 
@@ -99,6 +91,7 @@ FROM market_buffers
 LEFT JOIN tigray_settlements ON ST_Within(tigray_settlements.geometry, market_buffers.buffer_geom)
 GROUP BY market_buffers.gid
 ) AS subquery;
+
 --number of markets in the restricted area
 SELECT restricted_areas.woreda AS woreda, COUNT(tigray_markets.gid) AS number_of_markets
 FROM restricted_areas
@@ -113,8 +106,7 @@ LEFT JOIN tigray_settlements ON ST_Within(tigray_settlements.geometry, restricte
 GROUP BY restricted_areas.woreda
 order by number_of_settlements desc;
 
-
---totals
+--Total number of settlements in restricted areas
 SELECT 
     SUM(number_of_settlements) AS total_settlements
 FROM (
@@ -125,31 +117,8 @@ GROUP BY restricted_areas.woreda
 order by number_of_settlements desc
 ) AS subquery;
 
-
-
---#We first select the attribute we want to get raster values from
-SELECT parks.name, AVG((ST_SummaryStats(ST_Clip(rast.rast, parks.geom, TRUE))).mean) AS avg_lst		#This will average the rast value from the polygons
-FROM public.lst_raster AS rast, public.parks_vector AS parks		#Renaming the raster and vector tables to rast and parks 
-WHERE ST_Intersects(rast.rast, parks.geom)		#Where the raster values intersect the geometries of the vector file
-GROUP BY parks.name;		#Group results by the attribute we selected earlier
-
-
---#We first select the attribute we want to get raster values from
-SELECT restricted_areas.woreda, AVG((ST_SummaryStats(ST_Clip(rast.rast, restricted_areas.geometry, TRUE))).mean) AS avg_lc2		--#This will average the rast value from the polygons
-FROM public.tigray_lc2 AS rast, 
-public.restricted_areas AS restricted_areas		--#Renaming the raster and vector tables to rast and parks 
-WHERE ST_Intersects(rast.rast, restricted_areas.geometry)		--#Where the raster values intersect the geometries of the vector file
-GROUP BY restricted_areas.woreda;		--#Group results by the attribute we selected earlier
-
-SELECT restricted_areas.woreda, AVG((ST_SummaryStats(ST_Clip(cropland.number_of_pixels, restricted_areas.geometry, TRUE))).mean) AS avg_lc2		--#This will average the rast value from the polygons
-FROM public.cropland AS rast, 
-public.restricted_areas AS restricted_areas		--#Renaming the raster and vector tables to rast and parks 
-WHERE ST_Intersects(cropland.number_of_pixels, restricted_areas.geometry)		--#Where the raster values intersect the geometries of the vector file
-GROUP BY restricted_areas.woreda;
-
-
-
-
+--WORKING WITH RASTER DATA (landcover dataset)
+--Average pixel count in different woredas
 SELECT woredas.woreda, AVG((ST_SummaryStats(ST_Clip(rast.rast, woredas.geometry, TRUE))).mean) AS avg_lc2		
 FROM public.tigray_lc2 AS rast, 
 public.woredas AS woredas		 
@@ -157,9 +126,17 @@ WHERE ST_Intersects(rast.rast, woredas.geometry)
 GROUP BY woredas.woreda;
 
 
+-- CLip landcover to remain with landcover values from  restricted areas only
+SELECT restricted_areas.woreda, AVG((ST_SummaryStats(ST_Clip(rast.rast, restricted_areas.geometry, TRUE))).mean) AS avg_lc2		
+FROM public.tigray_lc2 AS rast, 
+public.restricted_areas AS restricted_areas		
+WHERE ST_Intersects(rast.rast, restricted_areas.geometry)		
+GROUP BY restricted_areas.woreda;		
+
+
 CREATE TABLE pixels AS
 SELECT (ST_ValueCount(rast)).value AS number_of_pixels,
-		(ST_ValueCount(rast)).count
+	(ST_ValueCount(rast)).count
 FROM tigray_lc2;
 
 CREATE TABLE pixels AS
