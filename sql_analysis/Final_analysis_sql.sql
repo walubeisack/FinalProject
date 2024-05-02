@@ -10,7 +10,7 @@ CREATE DATABASE FoodSecurity;
 CREATE EXTENSION POSTGIS;
 CREATE EXTENSION POSTGIS_RASTER;
 
--- upload the shapefiles
+-- Upload the shapefiles
 
 shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql
 
@@ -262,8 +262,6 @@ FROM
     tigray_markets,
     tigray_settlements
 ORDER BY average_distance;
-
-
 
 SELECT settlements.gid, COUNT(*) AS num_settlements
 FROM woredas;
