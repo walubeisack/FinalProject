@@ -173,13 +173,13 @@ FROM
 	 ) AS v;
 
 
---
-CREATE TABLE landcover_summary AS
+-- Create a new table containing the total pixel count for different landcover_types
+CREATE TABLE land_cover_summary AS
 SELECT 
     landcover_type,
     SUM(pixel_count) AS total_pixel_count
 FROM 
-    land_cover_summary
+    landcover_summary
 GROUP BY 
     landcover_type
 ORDER BY total_pixel_count DESC;
@@ -208,6 +208,59 @@ SELECT
 GROUP BY total_pixels;
 
 
---
+--switched focus onto the restricted area
 
+--
+CREATE TABLE redzone_cover(
+landcover_type TEXT,
+pixel_count INTEGER
+);
+INSERT INTO redzone_cover_ (landcover_type, pixel_count)
+SELECT 
+	CASE
+		WHEN land_cover_type = 10 THEN 'Tree cover'
+		WHEN land_cover_type = 20 THEN 'Shrubland'
+		WHEN land_cover_type = 30 THEN 'Grassland'
+		WHEN land_cover_type = 40 THEN 'Cropland'
+		WHEN land_cover_type = 50 THEN 'Built-up'
+		WHEN land_cover_type = 60 THEN 'Bare'
+		WHEN land_cover_type = 70 THEN 'Snow and ice'
+		WHEN land_cover_type = 80 THEN 'Permanent water bodies'
+		WHEN land_cover_type = 90 THEN 'Herbaceous wetland'
+		WHEN land_cover_type = 95 THEN 'Mangroves'
+		WHEN land_cover_type = 100 THEN 'Moss and lichen'
+		ELSE 'Other'
+	END AS landcover_type,
+	number_of_pixels AS pixel_count 
+FROM
+	(SELECT
+	 	land_cover_type,
+	 	number_of_pixels
+	 FROM
+	 	lc_pixels
+	 ) AS v;
+
+-- Create a new table containing the total pixel count for different landcover_types in restricted areas
+CREATE TABLE redzone_cover_summary AS
+SELECT 
+    landcover_type,
+    SUM(pixel_count) AS total_pixel_count
+FROM 
+    redzone_cover
+GROUP BY 
+    landcover_type
+ORDER BY total_pixel_count DESC;
+
+
+--Created a new table containing a new column 'pixel percentage'
+CREATE TABLE redcover_summary AS
+SELECT 
+    landcover_type,
+    SUM(pixel_count) AS total_pixel_count,
+    (SUM(pixel_count) * 100.0 / (SELECT SUM(pixel_count) FROM redzone_cover_summary)) AS pixel_percentage
+FROM 
+    redzone_cover_summary
+GROUP BY 
+    landcover_type
+ORDER BY total_pixel_count DESC;
 
