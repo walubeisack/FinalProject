@@ -1,3 +1,12 @@
+-- Create the initial database
+CREATE DATABASE FoodSecurity;
+
+-- Connect to the database
+\c FoodSecurity;
+
+-- Create spatial extensions
+CREATE EXTENSION POSTGIS;
+CREATE EXTENSION POSTGIS_RASTER;
 
 --tables created for analysis
 CREATE TABLE woredas AS 
