@@ -164,7 +164,7 @@ FROM woredas_21;
 
 **Settlements table**
 
-A new table 'settlements_clean' was created and populated using the script below. 
+A new table 'tigray_settlements' was created and populated using the script below. 
 
 ```SQL
 CREATE TABLE tigray_settlements AS 
@@ -450,12 +450,12 @@ SELECT
 GROUP BY total_pixels;
 ```
 
-I encountered an error because my original raster file had multiple  rows with the same values
+I encountered an error because my original raster file had multiple  rows with the same values, and there was no way of seeing the contents of the table after creation. 
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/5b4773f2-e4ea-454a-bf01-3da6185fd639)
 
-****
-### switched focus onto the amount of cropland in restricted areas
+*** 
+### Switched focus onto the amount of cropland in restricted areas
 
 Step 1. Created a table containing landcover in the restricted areas 
 
@@ -527,8 +527,17 @@ ORDER BY total_pixel_count DESC;
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/80930fa0-0215-49e1-a0c5-d6b7f023578e)
 
+From the table, 25% of the land cover in the restricted area is cropland. There is no standard percent to benchmark sufficient  cropland for subsistence or commercial farming since such  standards would depend on population density, agricultural productivity, land distribution policies, and environmental considerations. However, as a general guideline, a country aiming for food security and self-sufficiency like Ethiopia might target a significant portion of arable land available for cultivation by its residents.
 
 
+### Challenges
+There is a somewhat limited level of detail in available data (empty columns). my primary focus was to use the lowest administrative units in the Ethiopia administrative system, but the datasets at that level were now sufficient.
+
+This analysis provides a basic analysis of food accessibility in the region, it is important to acknowledge that there are more places to purchase food than the 47 markets mapped.
+
+There were difficulties in filtering raster data to remain with cropland only. The layer was inseparable after uploading the data. 
+
+### Future works
 
 
 
