@@ -356,8 +356,17 @@ GROUP BY restricted_areas.woreda;
 ![average_landcover_values_in_redzone](https://github.com/walubeisack/FinalProject/assets/165956747/c976ddae-465b-4c5c-ae20-1bdd479590be)
 
 
-I am yet to find out how much cropland is in the restricted area compared to cropland in restricted areas.
-I made a land cover types and pixels count table using;
+
+### What land cover types are in restricted areas?
+
+### How much cropland is there in these Woredas?
+
+Land_cover classes with defined bands from the data source
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/bd4cbd62-c7ce-4d2d-9a38-db406089cbc3)
+
+
+STEP 1. Create a table containing landcover type and their pixel counts
 
 ```SQL
 CREATE TABLE lc_pixels AS
@@ -368,25 +377,155 @@ FROM
     tigray_lc2;
 ```
 
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/dd2172ec-cc55-42dd-95bf-b02096f7103b)
-
-
-Compared the land_cover classes with the defined classes from the data source
-
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/bd4cbd62-c7ce-4d2d-9a38-db406089cbc3)
-
-
-Cropland is represented by value '40', and a table containing cropland values was created
+Step 2. Create a new table to summarize land cover types
 
 ```SQL
-CREATE TABLE cropland AS
-SELECT *
-FROM pixels
-WHERE land_cover_type = 40;
+CREATE TABLE landcover_summary(
+landcover_type TEXT,
+pixel_count INTEGER
+);
+INSERT INTO landcover_summary (landcover_type, pixel_count)
+SELECT 
+	CASE
+		WHEN land_cover_type = 10 THEN 'Tree cover'
+		WHEN land_cover_type = 20 THEN 'Shrubland'
+		WHEN land_cover_type = 30 THEN 'Grassland'
+		WHEN land_cover_type = 40 THEN 'Cropland'
+		WHEN land_cover_type = 50 THEN 'Built-up'
+		WHEN land_cover_type = 60 THEN 'Bare'
+		WHEN land_cover_type = 70 THEN 'Snow and ice'
+		WHEN land_cover_type = 80 THEN 'Permanent water bodies'
+		WHEN land_cover_type = 90 THEN 'Herbaceous wetland'
+		WHEN land_cover_type = 95 THEN 'Mangroves'
+		WHEN land_cover_type = 100 THEN 'Moss and lichen'
+		ELSE 'Other'
+	END AS landcover_type,
+	number_of_pixels AS pixel_count 
+FROM
+	(SELECT
+	 	land_cover_type,
+	 	number_of_pixels
+	 FROM
+	 	lc_pixels
+	 ) AS v;
 ```
 
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/404e9d3b-4f5d-49ec-a3cf-6bc4d95bbcd1)
+Step 3. Create a new table containing the total pixel count for different landcover_types
 
+```SQL
+CREATE TABLE land_cover_summary AS
+SELECT 
+    landcover_type,
+    SUM(pixel_count) AS total_pixel_count
+FROM 
+    landcover_summary
+GROUP BY 
+    landcover_type
+ORDER BY total_pixel_count DESC;
+```
+
+Step 4. Calculate the landcover area
+
+-- Get total pixels, use to calculate area per pixel, total area for different landcover type
+```SQL
+CREATE TABLE landcover_area AS
+WITH pixel_SUMMARY as (
+	SELECT SUM(total_pixel_count) as total_pixels
+	FROM landcover_summary
+)
+SELECT 
+    SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS area_per_pixel_sq_km,
+    	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 10)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_treecover_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 20)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_shrubland_sq_km,    
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 30)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_grassland_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 40)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_cropland_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 50)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_builtup_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 60)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_bare_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 70)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_snow_ice_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 80)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_permanentwaterb_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 90)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_herbaceous_sq_km,
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 95)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_mangroves_sq_km,	
+	(SELECT number_of_pixels FROM lc_pixels WHERE land_cover_type = 100)* SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_moss_lichen_sq_km
+	FROM tigray_lc2, pixel_summary
+GROUP BY total_pixels;
+```
+
+I encountered an error because my original raster file had multiple  rows with the same values
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/5b4773f2-e4ea-454a-bf01-3da6185fd639)
+
+****
+### switched focus onto the amount of cropland in restricted areas
+
+Step 1. Created a table containing landcover in the restricted areas 
+
+```SQL
+CREATE TABLE redzone_cover(
+landcover_type TEXT,
+pixel_count INTEGER
+);
+INSERT INTO redzone_cover_ (landcover_type, pixel_count)
+SELECT 
+	CASE
+		WHEN land_cover_type = 10 THEN 'Tree cover'
+		WHEN land_cover_type = 20 THEN 'Shrubland'
+		WHEN land_cover_type = 30 THEN 'Grassland'
+		WHEN land_cover_type = 40 THEN 'Cropland'
+		WHEN land_cover_type = 50 THEN 'Built-up'
+		WHEN land_cover_type = 60 THEN 'Bare'
+		WHEN land_cover_type = 70 THEN 'Snow and ice'
+		WHEN land_cover_type = 80 THEN 'Permanent water bodies'
+		WHEN land_cover_type = 90 THEN 'Herbaceous wetland'
+		WHEN land_cover_type = 95 THEN 'Mangroves'
+		WHEN land_cover_type = 100 THEN 'Moss and lichen'
+		ELSE 'Other'
+	END AS landcover_type,
+	number_of_pixels AS pixel_count 
+FROM
+	(SELECT
+	 	land_cover_type,
+	 	number_of_pixels
+	 FROM
+	 	lc_pixels
+	 ) AS v;
+```
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/e859a2a5-2aab-4c91-ac19-056e2fe442b6)
+
+
+Step 3. Create a new table containing the total pixel count for different landcover_types in restricted areas
+
+```SQL
+CREATE TABLE redzone_cover_summary AS
+SELECT 
+    landcover_type,
+    SUM(pixel_count) AS total_pixel_count
+FROM 
+    redzone_cover
+GROUP BY 
+    landcover_type
+ORDER BY total_pixel_count DESC;
+```
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/445ad478-9f58-4e36-915b-cc47ac6892ac)
+
+
+Step 4. Created a new table containing a new column 'pixel percentage' showing  the percentage of different land cover types in the restricted areas.
+
+```SQL
+CREATE TABLE redcover_summary AS
+SELECT 
+    landcover_type,
+    SUM(pixel_count) AS total_pixel_count,
+    (SUM(pixel_count) * 100.0 / (SELECT SUM(pixel_count) FROM redzone_cover_summary)) AS pixel_percentage
+FROM 
+    redzone_cover_summary
+GROUP BY 
+    landcover_type
+ORDER BY total_pixel_count DESC;
+```
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/80930fa0-0215-49e1-a0c5-d6b7f023578e)
 
 
 
