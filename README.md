@@ -592,6 +592,18 @@ There were difficulties in filtering raster data to remain with cropland only. T
 The incorporation of the Food Insecurity Index (FII) into a specific location-based project like this by selecting variables relevant to the project objectives, and ultimately determining the FII for Tigray region Ethiopia.
 
 
+### Refrences
+Bennion, Natalie, Alisha H. Redelfs, Lori Spruance, Shelby Benally, and Chantel Sloan-Aagard. “Driving Distance and Food Accessibility: A Geospatial Analysis of the Food Environment in the Navajo Nation and Border Towns.” Frontiers in Nutrition 9 (July 7, 2022). https://doi.org/10.3389/fnut.2022.904119.
+
+Larsen, Kristian, and Jason Gilliland. “Mapping the Evolution of ‘Food Deserts’ in a Canadian City: Supermarket Accessibility in London, Ontario, 1961–2005.” International Journal of Health Geographics 7, no. 1 (2008): 16. https://doi.org/10.1186/1476-072x-7-16.
+Lu, Hua, Xingyou Zhang, James B. Holt, Dafna Kanny, and Janet B. Croft. “Quantifying Spatial Accessibility in Public Health Practice and Research: An Application to on-Premise Alcohol Outlets, United States, 2013.” International Journal of Health Geographics 17, no. 1 (June 27, 2018). https://doi.org/10.1186/s12942-018-0143-y.
+
+Susilo, Bowo, and Rika Harini. “Spatial Analysis and Visualization of Geographic Access to Food in the Capital Area of Bulungan Regency, North Kalimantan Province.” Forum Geografi 32, no. 2 (November 25, 2018): 146–55. https://doi.org/10.23917/forgeo.v32i2.7070. 
+
+Mathenge, Mwehe, Ben G. Sonneveld, and Jacqueline E. Broerse. “Mapping the Spatial Dimension of Food Insecurity Using GIS-Based Indicators: A Case of Western Kenya.” Food Security 15, no. 1 (August 13, 2022): 243–60. https://doi.org/10.1007/s12571-022-01308-6. 
+“Oxfam Warns of Growing Hunger Crisis in Tigray and Amhara Regions as Families Resort to Extreme Measures to Survive.” Oxfam International, February 9, 2024. https://www.oxfam.org/en/press-releases/oxfam-warns-growing-hunger-crisis-tigray-and-amhara-regions-families-resort-extreme#:~:text=Nearly%20400%20people%20according%20to,million%20people%20facing%20acute%20hunger. 
+
+
 
 
 
