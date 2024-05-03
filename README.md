@@ -592,7 +592,7 @@ There were difficulties in filtering raster data to remain with cropland only. T
 The incorporation of the Food Insecurity Index (FII) into a specific location-based project like this by selecting variables relevant to the project objectives, and ultimately determining the FII for Tigray region Ethiopia.
 
 
-### Refrences
+## Refrences
 Bennion, Natalie, Alisha H. Redelfs, Lori Spruance, Shelby Benally, and Chantel Sloan-Aagard. “Driving Distance and Food Accessibility: A Geospatial Analysis of the Food Environment in the Navajo Nation and Border Towns.” Frontiers in Nutrition 9 (July 7, 2022). https://doi.org/10.3389/fnut.2022.904119.
 
 Larsen, Kristian, and Jason Gilliland. “Mapping the Evolution of ‘Food Deserts’ in a Canadian City: Supermarket Accessibility in London, Ontario, 1961–2005.” International Journal of Health Geographics 7, no. 1 (2008): 16. https://doi.org/10.1186/1476-072x-7-16.
