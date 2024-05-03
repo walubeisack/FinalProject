@@ -487,7 +487,7 @@ SELECT
 FROM tigray_landcover, pixel_summary
 GROUP BY total_pixels;
 ```
-This table shows the ttal area fro each landcover type in Tigray region.
+This table shows the total area for each landcover type in the Tigray region.
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/c7a0b299-f2d4-4eb8-b757-85a3184baf24)
 
