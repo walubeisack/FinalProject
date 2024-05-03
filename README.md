@@ -571,7 +571,7 @@ CREATE TABLE "Percent_landcover_Area" AS
  SELECT "Columns","Values"*100/(SELECT SUM("Values") FROM land_cover_area)
  FROM "Redzonelandcover_Area"
  WHERE "Columns" IS NOT NULL AND "Values" IS NOT NULL
- Order by "Values" desc;
+ Order by "Values" DESC;
 ```
 
 
@@ -589,7 +589,7 @@ This analysis provides a basic analysis of food accessibility in the region, it 
 There were difficulties in filtering raster data to remain with cropland only. The layer was inseparable after uploading the data. 
 
 ### Future works
-
+The incorporation of the Food Insecurity Index (FII) into a specific location-based project like this by selecting variables relevant to the project objectives, and ultimately determining the FII for Tigray region Ethiopia.
 
 
 
