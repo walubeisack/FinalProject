@@ -463,6 +463,35 @@ I encountered an error because my original raster file had multiple  rows with t
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/5b4773f2-e4ea-454a-bf01-3da6185fd639)
 
+Fixed the query by adding by adding 'sum' on the selected columns to return the total pixels fro each landcover type.
+
+```SQL
+CREATE TABLE tigraylandcover AS
+WITH pixel_SUMMARY AS (
+    SELECT SUM(total_pixel_count) AS total_pixels
+    FROM redcover_summary
+)
+SELECT 
+	-- Calculate total area covered by each land cover type in square kilometers
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 10) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_treecover_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 20) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_shrubland_sq_km,    
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 30) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_grassland_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 40) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_cropland_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 50) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_builtup_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 60) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_bare_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 70) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_snow_ice_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 80) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_permanentwaterb_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 90) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_herbaceous_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 95) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_mangroves_sq_km,    
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 100) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_moss_lichen_sq_km
+FROM tigray_landcover, pixel_summary
+GROUP BY total_pixels;
+```
+This table shows the ttal area fro each landcover type in Tigray region.
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/c7a0b299-f2d4-4eb8-b757-85a3184baf24)
+
+
 *** 
 ### Switched focus onto the amount of cropland in restricted areas
 
@@ -500,6 +529,9 @@ FROM
 ```
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/e859a2a5-2aab-4c91-ac19-056e2fe442b6)
+
+
+
 
 
 Step 3. Create a new table containing the total pixel count for different landcover_types in restricted areas
