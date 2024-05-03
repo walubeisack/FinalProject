@@ -377,6 +377,9 @@ FROM
     tigray_lc2;
 ```
 
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/5ba23caf-a7eb-4b97-ba5c-3636f8d234bf)
+
+
 Step 2. Create a new table to summarize land cover types
 
 ```SQL
@@ -410,6 +413,9 @@ FROM
 	 ) AS v;
 ```
 
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/579316e4-9a75-4fe2-a2f3-c5f5507044aa)
+
+
 Step 3. Create a new table containing the total pixel count for different landcover_types
 
 ```SQL
@@ -423,6 +429,9 @@ GROUP BY
     landcover_type
 ORDER BY total_pixel_count DESC;
 ```
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/e5907496-a76a-4d42-9c69-88670db347a1)
+
 
 Step 4. Calculate the landcover area
 
