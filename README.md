@@ -534,39 +534,49 @@ FROM
 
 
 
-Step 3. Create a new table containing the total pixel count for different landcover_types in restricted areas
+Step 3. Create a new table containing the total area for different landcover_types in restricted areas
 
 ```SQL
-CREATE TABLE redzone_cover_summary AS
+CREATE TABLE redzone_cover_area AS
+WITH pixel_SUMMARY AS (
+    SELECT SUM(total_pixel_count) AS total_pixels
+    FROM redcover_summary
+)
 SELECT 
-    landcover_type,
-    SUM(pixel_count) AS total_pixel_count
-FROM 
-    redzone_cover
-GROUP BY 
-    landcover_type
-ORDER BY total_pixel_count DESC;
+	-- Calculate total area covered by each land cover type in square kilometers
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 10) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_treecover_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 20) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_shrubland_sq_km,    
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 30) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_grassland_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 40) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_cropland_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 50) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_builtup_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 60) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_bare_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 70) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_snow_ice_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 80) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_permanentwaterb_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 90) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_herbaceous_sq_km,
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 95) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_mangroves_sq_km,    
+    (SELECT SUM(number_of_pixels) FROM lc_pixels WHERE land_cover_type = 100) * SUM(ST_Area(rast::geometry::geography)) / (1000000.0 * total_pixels) AS total_area_moss_lichen_sq_km
+FROM tigray_landcover, pixel_summary
+GROUP BY total_pixels;
+
 ```
 
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/445ad478-9f58-4e36-915b-cc47ac6892ac)
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/8d791f7c-048d-499c-a283-0d8d05be57bf)
 
 
-Step 4. Created a new table containing a new column 'pixel percentage' showing  the percentage of different land cover types in the restricted areas.
+
+Step 4. Created a new table showing the percentage area of different land cover types in the restricted areas.
 
 ```SQL
-CREATE TABLE redcover_summary AS
-SELECT 
-    landcover_type,
-    SUM(pixel_count) AS total_pixel_count,
-    (SUM(pixel_count) * 100.0 / (SELECT SUM(pixel_count) FROM redzone_cover_summary)) AS pixel_percentage
-FROM 
-    redzone_cover_summary
-GROUP BY 
-    landcover_type
-ORDER BY total_pixel_count DESC;
+CREATE TABLE "Percent_landcover_Area" AS
+ SELECT "Columns","Values"*100/(SELECT SUM("Values") FROM land_cover_area)
+ FROM "Redzonelandcover_Area"
+ WHERE "Columns" IS NOT NULL AND "Values" IS NOT NULL
+ Order by "Values" desc;
 ```
 
-![image](https://github.com/walubeisack/FinalProject/assets/165956747/80930fa0-0215-49e1-a0c5-d6b7f023578e)
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/b4b27aff-4d2e-4fa6-ae86-4a609d81261f)
+
 
 From the table, 25% of the land cover in the restricted area is cropland. There is no standard percent to benchmark sufficient  cropland for subsistence or commercial farming since such  standards would depend on population density, agricultural productivity, land distribution policies, and environmental considerations. However, as a general guideline, a country aiming for food security and self-sufficiency like Ethiopia might target a significant portion of arable land available for cultivation by its residents.
 
