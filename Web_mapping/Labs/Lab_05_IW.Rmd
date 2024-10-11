@@ -1,0 +1,138 @@
+---
+title: "labv_05"
+author: "Isack Walube"
+date: "2024-10-10"
+output: html_document
+---
+
+
+#install packages
+```{r}
+if (!require('leaflet')) install.packages('leaflet')
+
+if (!require('devtools')) install.packages('devtools')
+
+```
+
+
+
+##Load Basemap
+```{r}
+basemap <- leaflet() %>%
+  addProviderTiles(
+    "CartoDB.Positron",
+    group = "CartoDB"
+  )  %>%
+  addProviderTiles(
+    "OpenStreetMap",
+    # give the layer a name
+    group = "OpenStreetMap"
+  ) %>% 
+  #ctrl+shift+m for %>%
+  addProviderTiles("OpenTopoMap", group = 'Topology') %>% 
+  #Layers control
+  addLayersControl (
+    baseGroups = c('CartoDB', 'OpenStreetMap'),
+    position = 'topleft'
+  )
+basemap
+```
+
+
+```{r}
+install.packages("sf")
+library(sf)
+
+#set the working directory
+setwd("C:\\Users\\isack\\Web_mapping\\Labs\\Lab05_student\\dsga") 
+
+#read the shapefile
+dsga = read_sf("DSGA_POLY.shp")
+
+#tranform crs
+tf_poly <- st_transform(dsga, crs = '+proj=longlat +datum=WGS84')
+print(tf_poly$geometry)
+```
+
+
+```{r}
+unique(tf_poly$CLASS)
+```
+
+
+## Colorization
+```{r}
+devtools::install_github("awhstin/awtools")
+library('awtools')
+library(leaflet)
+
+#create a color palette
+colors <- c("red", "green","orange", "blue")
+palette_poly <- colorFactor(palette = colors, domain = tf_poly$CLASS) 
+
+
+
+leaflet(data = tf_poly) %>%
+  addTiles() %>%  # Add a basemap
+  addPolygons(
+    fillColor  = ~palette_poly(CLASS),
+    highlightOptions = highlightOptions(color = "white", weight = 2,
+      bringToFront = TRUE),# Color based on the 'category' column
+    fillOpacity = 0.8,        # Adjust opacity
+    color = "#000000",
+    weight = 1,                   # Set stroke weight
+    stroke = TRUE,
+    label = tf_poly$AREA_DESC,
+    popup = tf_poly$AREA_DESC
+    ) %>% 
+  addLegend(data = tf_poly,
+          position = "bottomright",
+          pal = palette_poly, 
+          values = ~CLASS,
+          title = "Class",
+          opacity = 1)
+```
+
+
+
+```{r}
+final_map = leaflet() %>%
+   addProviderTiles(
+                    "CartoDB.Positron",
+                    group = "CartoDB"
+  ) %>%
+   addProviderTiles(
+                    "OpenStreetMap.Mapnik",
+                    group = "OpenStreetMap"
+      ) %>%
+  addPolygons(data = tf_poly,
+          fillColor  = ~palette_poly(CLASS),
+           highlightOptions = highlightOptions(color = "white", weight = 2,
+      bringToFront = TRUE), #highlight
+          fillOpacity = 0.8,        
+          color = "#000000",
+          weight = 1,                   
+          stroke = TRUE,
+          label = tf_poly$AREA_DESC,
+          popup = tf_poly$AREA_DESC,
+          group = 'Classification'
+    ) %>%
+  addLegend(data = tf_poly,
+          position = "bottomright",
+          pal = palette_poly, 
+          values = ~CLASS,
+          title = "CLASSIFICATION STATUS",
+          opacity = 1) %>%
+  
+    addLayersControl(baseGroups = c("OpenTopo", "OpenStreet Map"), overlayGroups = c("Classification"),
+                   position = "topright")
+
+final_map
+```
+
+
+```{r}
+library(htmlwidgets)
+saveWidget(final_map,  "C:\\Users\\isack\\Web_mapping\Labs\\Lab_05_leftlet.html", selfcontained = TRUE)
+```
+

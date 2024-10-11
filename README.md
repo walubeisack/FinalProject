@@ -8,6 +8,10 @@ The Tigray region of Ethiopia faces significant challenges regarding food securi
 2.	To identify the nearest food markets for settlements in underserved areas in the Tigray region and determine the average distance to the nearest market.
 3.	To access the spatial distribution and extent of agricultural land in the region.
 
+*Study Area*
+
+![Study_area](https://github.com/walubeisack/FinalProject/assets/165956747/d2f777b4-1792-4658-94f4-fa1fdbdcd8b1)
+
 
 
 ## 2.0 Data Acquisition, Processing, & Database Setup
@@ -31,7 +35,7 @@ All the data layers were reprojected to WGQ 1984 UTM Zone 37N on ArcGIS Pro.
 Land cover data was downloaded and processed from ESA World Land Cover (10m) to Google Drive using Google Earth Engine using the code below.   
 a rectangular polygon around the Tigray region was created. As exhibited in the code, the land cover data was clipped to remain with data attributed to the Tigray region extent.
 
-```JAVA
+```JAVASCRIPT
 var dataset = ee.ImageCollection('ESA/WorldCover/v200').first();
 var clippedDataset = dataset.clip(Tigray);
 
@@ -81,7 +85,7 @@ A final project database 'FoodSecurity' was created using pgadmin. All the sql q
 
 
 ### 2.2 Data layers
- *Study Area*
+*Data layers*
 
 ![image](https://github.com/walubeisack/FinalProject/assets/165956747/32ab70fd-3ed3-4b77-9ffb-7fd6ae7e33ba)
 
@@ -93,29 +97,34 @@ The final polygon and point shapefiles from ArcGIS Pro were imported into the da
 
 **Woredas** are level 3 of Ethipia's administrative system with the country as the highest, at level 1.
 
-shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas.sql 
+```SQL
+shp2pgsql -s 4326 -I Database\Data\Woredas.shp public.Woredas > Database\Data\sql_tables\Woredas_21.sql 
 
-psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas.sql
+psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Woredas_21.sql
+```
 
 **Markets**
+```SQL
 
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.Markets > Database\Data\sql_tables\Markets.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Markets.sql
 
+```
 **Settlements**
-
+```SQL
 shp2pgsql -s 4326 -I Database\Data\Markets.shp public.woredas > Database\Data\sql_tables\Settlements.sql
 
 psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Settlements.sql
 
+```
 **Tigray land cover**
+```SQL
+raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\Tigray_lc2.sql
 
-raster2pgsql -s 4326 -t 1000x1000 -I -C -M Database\FinalProject\FinalProject\FinalProject_ARCPRO\Tigray_Clip.tif > Database\Data\sql_tables\LandCover.sql
+psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\Tigray_lc2.sql
 
-psql -U postgres -d FoodSecurity -f Database\Data\sql_tables\LandCover.sql
-
-
+```
 
 *Tables*
 
@@ -247,10 +256,46 @@ GROUP BY market_buffers.gid
 
 ```
 
-We had earlier talked about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
+### Percent access
+This percentage is calculated from the ratio of the area the buffers cover in the woredas to the area of the woredas.
+
+```SQL
+CREATE TABLE percent_access AS
+SELECT 
+    buffer_coverage.woreda,
+    buffer_coverage.buffer_area,
+    woredas.woreda_area,
+    ROUND((buffer_coverage.buffer_area / woredas.woreda_area)::numeric * 100, 2) AS buffer_area_percentage
+FROM buffer_coverage
+JOIN (
+    SELECT 
+        woreda,
+        ST_Transform(geometry, 32637) AS geometry,
+        ST_Area(ST_Transform(geometry, 32637)) AS woreda_area
+    FROM woredas
+) woredas
+ON buffer_coverage.woreda = woredas.woreda
+ORDER BY buffer_area_percentage ASC;
+```
+
+![image](https://github.com/walubeisack/FinalProject/assets/165956747/0ba86bb3-4ec3-4e2d-9053-9cb8fa1fec24)
 
 
-![Hard_to_Reach_areas](https://github.com/walubeisack/FinalProject/assets/165956747/adfe9333-b9ec-4af0-aecd-c8baefdffdba)
+![Population Access](https://github.com/walubeisack/FinalProject/assets/165956747/8aa9c153-faf4-4732-9200-a35569370306)
+
+
+
+
+
+
+
+
+We had earlier discussed about the hard-to-reach areas, we would therefore like to find out how many markets and settlements are in hard-to-reach areas.
+
+
+![Hard_to_reach_areas](https://github.com/walubeisack/FinalProject/assets/165956747/e7aa1efb-544c-4552-bd51-59ea771c7036)
+
+
 
 ### Markets
 ```SQL
