@@ -1,0 +1,5 @@
+Number of Pixels
+Class 1(1971 Built) 	      - 19257
+Class 2(1971-1985 Gain Built) - 3022
+Class 3(1985-1999 Gain Built) - 2746
+Class 4(1971-1999 Stable Non-Built) - 78184

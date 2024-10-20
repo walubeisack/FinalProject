@@ -1,0 +1,265 @@
+---
+title: "Lab_05"
+author: "Isack Walube"
+date: "2024-10-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+title: "Interactive Mapping"
+author: "Yanan Wu"
+date: "2024-09-28"
+output:
+  html_document: default
+  pdf_document: default
+---
+# Interactive Mapping using the Leaflet package in R
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+
+
+```{r}
+if (!require('leaflet')) install.packages('leaflet')
+
+if (!require('devtools')) install.packages('devtools')
+
+```
+
+## Load leaflet package
+
+```{r setup, include=FALSE}
+ library(leaflet)
+```
+
+# Basemap
+
+
+```{r basemap, fig.height=10, fig.width=15, paged.print=TRUE}
+basemap <- leaflet() %>%
+  addProviderTiles(
+    "CartoDB.Positron",
+    group = "CartoDB"
+  )  %>%
+  addProviderTiles(
+    "OpenStreetMap",
+    # give the layer a name
+    group = "OpenStreetMap"
+  ) %>%
+  addProviderTiles("OpenTopoMap", group = 'Topology')
+
+basemap
+```
+
+
+Using the center of Boston: longitude:-71.0589, latitude; 42.3601, zoom = 15
+
+```{r}
+zoom_basemap = basemap %>% setView(lng = -71.0589, lat = 42.3601, zoom = 15)
+```
+
+
+
+```{r}
+zoom_basemap %>% addLayersControl(baseGroups = c('Topology', "OpenStreetMap", "CartoDB"),
+                                                 position = "topleft")
+```
+
+
+
+You can place a marker on the plot by providing coordinates through the lng (longitude) and lat (latitude) arguments of the addMarkers function. This function accepts either a single value or a vector of values for each argument.
+
+```{r}
+basemap %>% 
+  addMarkers(lat = 42.252,
+             lng =  -71.824,
+             label = "Clark")
+```
+
+```{r}
+icon.home <- makeAwesomeIcon(
+  icon = "home", markerColor = "blue",
+  library = "fa",
+  iconColor = "white"
+)
+
+basemap %>%
+  addAwesomeMarkers(
+    lat = 42.252,
+    lng =  -71.824,
+    label = "Clark",
+    icon = icon.home
+  )
+```
+## Add multiple locations
+
+Worcester, MA, is home to numerous parks that offer a variety of amenities, enriching the quality of life for its residents. The data below represents a selection of parks in the city and serves as a demonstration for educational purposes. It does not encompass all parks in Worcester.
+
+parks.csv data includes the location for several parks in Worcester city
+
+```{r}
+setwd("C:\\Users\\isack\\Web_mapping\\Labs\\Lab05_student\\dsga") 
+dsga = read.shp("DSGA_POLY.shp")
+head(dsga)
+```
+## Exercise 03: Using addMarker to add Parks (multiple) to the basemap
+
+lng and lat can be a vector, get the x and y from parks
+
+A vector in R is the most basic data structure and is used to store a collection of values of the same type. Vectors can hold numeric, character, logical, or other types of data, but each vector must contain only one data type.
+
+```{r}
+basemap %>% addMarkers(lng =parks$x , lat =parks$y, label = parks$park_name)
+```
+
+## Add multiple locations: customize icon
+```{r}
+icons_list <- icons(iconUrl = 'https://raw.githubusercontent.com/gisynw/ssj-30262/refs/heads/main/docs/Lectures/Week06_R_Mapping/trees.png',
+                     iconWidth = 50, iconHeight = 50)
+
+
+basemap %>% addMarkers(lng = parks$x, lat = parks$y, icon = icons_list)
+```
+## Exercise 04: Add popup or label information 
+
+Add value from from names column in Parks using **popup** parameter or **label** parameter to see the difference
+
+```{r}
+basemap %>% addMarkers(lng = parks$x, lat = parks$y, icon = icons_list, label = )
+```
+
+## Add Point Shapefile 
+
+Data Source: [MassGIS Data: MassDEP Water Quality Monitoring Stations](https://www.mass.gov/info-details/massgis-data-massdep-water-quality-monitoring-stations#downloads-)
+
+Step 1: Check the projection of the leaflet Map
+
+```{r}
+print(c('projection of basemap: ',  basemap$x$options$crs$crsClass))
+```
+Step 2: Do the Transformation
+
+```{r}
+library(sf)
+setwd("C:\\Users\\isack\\Web_mapping\\Labs\\Lab05_student\\dsga") 
+DSGA = read_sf('DSGA_POLY.shp')
+print(c("original coordinate system:" , st_crs(DSGA)$epsg))
+tf_DSGA <- st_transform(DSGA, crs = '+proj=longlat +datum=WGS84')
+print(DSGA$geometry)
+head(DSGA$CLASS)
+```
+
+Step 3: Define a color palette based on the 'category' column
+
+[qualitative palette](https://github.com/EmilHvitfeldt/r-color-palettes/blob/main/type-sorted-palettes.md#qualitative-color-palettes)
+
+```{r}
+unique(DSGA$CLASS)
+```
+
+
+```{r}
+devtools::install_github("awhstin/awtools")
+library('awtools')
+
+palette_pts <- colorFactor(palette = mpalette, domain = DSGA$CLASS)
+```
+
+```{r}
+leaflet(data = tf_DSGA) %>%
+  addTiles() %>%  # Add a basemap
+  addCircleMarkers(
+    fillColor  = ~palette_pts(CLASS),  # Color based on the 'category' column
+    fillOpacity = 0.8,           # Adjust opacity
+    radius = 5,                  # Set marker size
+    stroke = TRUE,               # Add stroke to the markers
+    weight = 1,                   # Set stroke weight
+  color = "#000000",
+  label = DSGA$CLASS
+    ) 
+
+
+```
+##Exercise 05: Add Legend
+```{r}
+addLegend(data = tf_DSGA,
+          position = "bottomright",
+          pal = palette_pts, 
+          values = ~CLASS,
+          title = "Class",
+          opacity = 1)
+```
+
+
+
+
+## Add Polygon
+
+Before adding Polygon, Please transform your map to the leaflet projection
+
+```{r}
+dsga = read_sf('C:\\Users\\isack\\Web_mapping\\Labs\\Lab05_student\\dsga\\DSGA_POLY.shp')
+tf_dsga <- st_transform(dsga, crs = '+proj=longlat +datum=WGS84')
+```
+
+```{r}
+leaflet() %>%
+   addProviderTiles(
+    "CartoDB.Positron",
+    group = "OpenTopo"
+  ) %>%
+  addPolygons(data = tf_dsga,  color = "blue", label = tf_dsga$CLASS, fillOpacity = 1)
+```
+
+
+
+
+## Merge all layers into one map
+
+You will need to assign a name to each layer using groups, then use the function to define the base groups (which can be selected one at a time) and the overlay groups (which can be selected independently).
+
+
+```{r}
+final_map = leaflet() %>%
+   addProviderTiles(
+                    "CartoDB.Positron",
+                    group = "OpenTopo"
+  ) %>%
+   addProviderTiles(
+                    "OpenStreetMap.Mapnik",
+                    group = "OpenStreetMap"
+    ) %>%
+    addLegend(data = dsga,
+          position = "bottomleft",
+          pal = palette_pts, 
+          values = ~CLASS,
+          title = "Class",
+          opacity = 1) %>%
+   addPolygons(data = dsga,  color = "blue", label = dsga$CLASS, fillOpacity = 1,group = "Class") %>%
+   addLayersControl(baseGroups = c("OpenTopo", "StamenToner"),
+                   position = "topright")
+```
+
+
+```{r}
+library(htmlwidgets)
+saveWidget(final_map, "C:\\Users\\isack\\Web_mapping\\Week06_R_Mapping (1)\\Week06_R_Mapping\\index.html", selfcontained = TRUE)
+```
+
+## Upload html to Github and generate a web page
+
+
+
+
+
+
+
+
+
